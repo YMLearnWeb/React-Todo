@@ -35,9 +35,9 @@ class Todo extends Component {
   render() {
     return (
         <div className="todo">
-          <span className="todo-check"><input type="checkbox" className="todo-check-box" onChange={e =>this.props.checkTodo(e)} /></span>
+          <span className="todo-check"><input type="checkbox" className="todo-check-box check-box" onChange={e =>this.props.checkTodo(e)} /></span>
           <span className="todo-name">{this.props.name}</span>
-          <button className="delBtn" onClick = {() => this.props.delTodo()}>Delete</button>
+          <button className="delBtn btn no-border" onClick = {() => this.props.delTodo()}>x</button>
         </div>
     );
   }
@@ -94,16 +94,17 @@ class Todos extends Component {
         <div className="todo-input-part">
           <InputTodo addItem = {item => this.addTodo(item)} />
         </div>
-        <div> 
+        <ul> 
           {
             this.state.todos.map(
               (i,key) =>
               {return <li key={key}><Todo name={i.name}  checkTodo={e => this.checkTodo({key,e})} delTodo = {() => this.removeTodo({key})} /></li>}
             )
           }
-        </div>
+        </ul>
         <div className="summary">
-          <span className="finishUndone-num">{this.summaryTodoNum}</span>
+          <span>Finish Tasks: </span>
+          <span className="finishdone-num">{this.summaryTodoNum}</span>
         </div>
       </div>
     );
