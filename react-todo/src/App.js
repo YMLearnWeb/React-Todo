@@ -20,30 +20,101 @@ import './App.css';
 
 // export default App;
 
+class InputTodo extends Component {
+  render() {
+    return (
+      <div className="todo-input">
+        <input className="todo-input-box" id="inputTodo" type="text" placeholder="the task" />
+        <button className="todo-btn" type="button" onClick = {() => this.props.addItem(document.getElementById("inputTodo").value)}>Add</button>
+      </div>
+    )
+  }
+}
+
 class Todo extends Component {
   render() {
     return (
-      <span className="todo">{this.props.name}</span>
+        <div className="todo">
+          <span className="todo-check"><input type="checkbox" className="todo-check-box" onChange={e =>this.props.checkTodo(e)} /></span>
+          <span className="todo-name">{this.props.name}</span>
+          <button className="delBtn" onClick = {() => this.props.delTodo()}>Delete</button>
+        </div>
     );
   }
 }
 
 class Todos extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      todos: [],
+    }
+    this.summaryTodoNum = 1;
+    this.summaryTodo();
+  }
+
+  addTodo(todo) {
+    const todos_ = this.state.todos;
+    todos_.push({
+      "name":todo,
+      "finish":false
+    })
+    this.setState({
+      todos: todos_
+    })
+  }
+
+  removeTodo(todo) {
+    const todos_ = this.state.todos;
+    todos_.splice(todo,1);
+    this.setState({
+      todos: todos_
+    })
+    this.summaryTodo();
+  }
+
+  checkTodo(todo){
+    const todos_ = this.state.todos;
+    todos_[todo.key].finish = todo.e.target.checked;
+    this.setState({
+      todos: todos_
+    })
+    this.summaryTodo();
+  }
+
+  summaryTodo(){
+    const finishTodos = this.state.todos.filter( todo => todo.finish === true);
+    this.summaryTodoNum = finishTodos.length;
+  }
+
   render() {
-    var toDos = [{"name":"123"},{"name":"test"}];
+    const that = this;
     return (
-      toDos.map(function (item) {
-        return <li><Todo name= {item.name}/></li>
-      })
+      <div>
+        <div className="todo-input-part">
+          <InputTodo addItem = {item => this.addTodo(item)} />
+        </div>
+        <div> 
+          {
+            this.state.todos.map(
+              (i,key) =>
+              {return <li key={key}><Todo name={i.name}  checkTodo={e => this.checkTodo({key,e})} delTodo = {() => this.removeTodo({key})} /></li>}
+            )
+          }
+        </div>
+        <div className="summary">
+          <span className="finishUndone-num">{this.summaryTodoNum}</span>
+        </div>
+      </div>
     );
   }
-}
+} 
 
 class TodoApp extends Component {
   render() {
     return (
       <div className="todo-main">
-        <Todos />
+          <Todos />
       </div>
     );
   }
